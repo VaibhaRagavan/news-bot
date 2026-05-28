@@ -10,8 +10,8 @@ import streamlit as st
 import asyncio
 
 load_dotenv()
-os.environ["LANGSMITH_API_KEY"] = st.secrets.get("LANGSMITH_API_KEY", os.getenv("LANGSMITH_API_KEY"))
-os.environ["OPENAI_API_KEY"] = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
+os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 os.environ["LANGSMITH_TRACING"] = "true"
 os.environ["LANGSMITH_PROJECT"] = "Basic_Agentic_AI"
 os.environ["LANGSMITH_ENDPOINT"] = "https://eu.api.smith.langchain.com"
@@ -22,7 +22,7 @@ async def get_tools():
     client = MultiServerMCPClient(
         {
             "web": {
-                "url": st.secrets.get("MCP_URL" , "http://127.0.0.1:8000/mcp"),
+                "url": os.getenv("MCP_URL" , "http://127.0.0.1:8000/mcp"),
                 "transport": "streamable_http",
             }
         }

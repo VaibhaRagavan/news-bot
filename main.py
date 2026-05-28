@@ -17,7 +17,11 @@ os.environ["LANGSMITH_TRACING"] = "true"
 os.environ["LANGSMITH_PROJECT"] = "Basic_Agentic_AI"
 os.environ["LANGSMITH_ENDPOINT"] = "https://eu.api.smith.langchain.com"
 
-
+_original_init = httpx.AsyncClient.__init__
+def _patched_init(self, **kwargs):
+    kwargs['http2'] = False
+    _original_init(self, **kwargs)
+httpx.AsyncClient.__init__ = _patched_init
 ##Getting the tools from MCP server
 async def get_tools():
     client = MultiServerMCPClient(
@@ -25,7 +29,7 @@ async def get_tools():
             "web": {
                 "url": st.secrets.get("MCP_URL" , "http://127.0.0.1:8000/mcp"),
                 "transport": "streamable_http",
-                "httpx_client_factory": lambda **kwargs: httpx.AsyncClient(**kwargs,http2=False),
+               
             }
         }
     )

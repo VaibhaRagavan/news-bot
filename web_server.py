@@ -1,4 +1,5 @@
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 from langchain_tavily import TavilySearch
 import feedparser
 import os
@@ -8,10 +9,15 @@ from datetime import datetime,timedelta
 import uvicorn
 load_dotenv()
 
-web=FastMCP("web",stateless_http=True,host="0.0.0.0",
-    allowed_hosts=["news-bot-production-460c.up.railway.app", "localhost", "127.0.0.1"])
-
-##RTE news 
+web=FastMCP("web",
+            stateless_http=True,
+            transport_security=TransportSecuritySettings(
+        enable_dns_rebinding_protection=True,
+        allowed_hosts=["news-bot-production-460c.up.railway.app", "localhost:*", "127.0.0.1:*"],
+        allowed_origins=["https://news-bot-production-460c.up.railway.app", "http://localhost:*"],
+    )
+           )
+   
 @web.tool()
 def get_news(query:str)->str:
     """ Use this tool to get news from RSS feeds.

@@ -227,7 +227,7 @@ The final report should be in a structured format with the following sections:
 - For each news item include the summary , link for the newspage ,source , factcheckcstatus, any contrediciton.
 
 """     
-        writer_llm=ChatOpenAI(model=llm, max_tokens=2000)
+        writer_llm=ChatOpenAI(model="gpt-4o-mini", max_tokens=2000)
         writer_response = await writer_llm.ainvoke([HumanMessage(content=writer_prompt)])
         final_report = writer_response.content
         agent_message = (

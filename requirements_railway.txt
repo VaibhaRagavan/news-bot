@@ -1,7 +1,7 @@
-mcp
 fastmcp
 langchain-tavily
 feedparser
 python-dotenv
 requests
+mcp
 uvicorn

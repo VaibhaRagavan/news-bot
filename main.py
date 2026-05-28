@@ -170,7 +170,7 @@ async def factcheck_agent(state: SupervisorState):
 - If research_data is empty or failed → respond with RESEARCH_FAILED
 - Flag each item VERIFIED or NOT VERIFIED
 - Note contradictions between sources.""")
-     tool= await get_tools_lazy()
+    tool= await get_tools_lazy()
     factcheck_agent_runnable = create_agent(
         model=llm, tools=tool, system_prompt=factcheck_prompt.content
     )

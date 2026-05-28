@@ -8,7 +8,7 @@ from datetime import datetime,timedelta
 import uvicorn
 load_dotenv()
 
-web=FastMCP("web")
+web=FastMCP("web",stateless_http=True)
 
 ##RTE news 
 @web.tool()
@@ -115,7 +115,7 @@ def get_old_news(query:str ,days_ago:int)->str:
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    app = web.streamable_http_app(stateless=True)
+    app = web.streamable_http_app()
     uvicorn.run(app, host="0.0.0.0", port=port)
     
     

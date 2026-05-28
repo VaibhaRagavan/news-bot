@@ -31,10 +31,13 @@ async def get_tools():
     return tool
 
 
-tools = asyncio.run(get_tools())
+tools = None
 llm = ChatOpenAI(model="gpt-4o-mini")
-
-
+async def get_tools_lazy():
+    global tools
+    if tools is None:
+        tools = await get_tools()
+    return tools
 
 ## Build the supervisor state
 class SupervisorState(TypedDict):
@@ -137,8 +140,9 @@ OUTPUT FORMAT (for each article):
 - Link:
 - Date (if available):                                
 """)
+    tool= await get_tools_lazy()
     agent_runnable = create_agent(
-        model=llm, tools=tools, system_prompt=research_prompt.content
+        model=llm, tools=tool, system_prompt=research_prompt.content
     )
     result = await agent_runnable.ainvoke(
         {"messages": [HumanMessage(content=f"Gather research for{task}")]}
@@ -166,8 +170,9 @@ async def factcheck_agent(state: SupervisorState):
 - If research_data is empty or failed → respond with RESEARCH_FAILED
 - Flag each item VERIFIED or NOT VERIFIED
 - Note contradictions between sources.""")
+     tool= await get_tools_lazy()
     factcheck_agent_runnable = create_agent(
-        model=llm, tools=tools, system_prompt=factcheck_prompt.content
+        model=llm, tools=tool, system_prompt=factcheck_prompt.content
     )
     result = await factcheck_agent_runnable.ainvoke(
         {"messages": [HumanMessage(content=f"Verify the research findings{data}")]}

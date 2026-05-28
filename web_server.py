@@ -115,7 +115,7 @@ def get_old_news(query:str ,days_ago:int)->str:
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    app = web.streamable_http_app()
+    app = web.streamable_http_app(stateless=True)
     uvicorn.run(app, host="0.0.0.0", port=port)
     
     

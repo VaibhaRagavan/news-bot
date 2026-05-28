@@ -24,6 +24,7 @@ async def get_tools():
             "web": {
                 "url": st.secrets.get("MCP_URL" , "http://127.0.0.1:8000/mcp"),
                 "transport": "streamable_http",
+                "headers": {"Connection": "close"},
             }
         }
     )

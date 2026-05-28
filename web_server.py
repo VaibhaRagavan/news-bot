@@ -112,10 +112,10 @@ def get_old_news(query:str ,days_ago:int)->str:
         })
     return str(results)
 
-        
-
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    web.run(transport="streamable-http", host="0.0.0.0", port=port)
     
    
     
-if __name__ == "__main__":
-    web.run(transport="streamable-http")
+

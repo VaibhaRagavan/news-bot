@@ -8,7 +8,8 @@ from datetime import datetime,timedelta
 import uvicorn
 load_dotenv()
 
-web=FastMCP("web",stateless_http=True)
+web=FastMCP("web",stateless_http=True,host="0.0.0.0",
+    allowed_hosts=["news-bot-production-460c.up.railway.app", "localhost", "127.0.0.1"])
 
 ##RTE news 
 @web.tool()

@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 import requests
 from datetime import datetime,timedelta
-import unicorn
+import uvicorn
 load_dotenv()
 
 web=FastMCP("web")

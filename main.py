@@ -143,7 +143,7 @@ OUTPUT FORMAT (for each article):
 """)
     tool= await get_tools_lazy()
     agent_runnable = create_agent(
-        model=llm, tools=tool, system_prompt=research_prompt.content
+        model="openai:gpt-4o-mini", tools=tool, system_prompt=research_prompt.content
     )
     result = await agent_runnable.ainvoke(
         {"messages": [HumanMessage(content=f"Gather research for{task}")]}
@@ -173,7 +173,7 @@ async def factcheck_agent(state: SupervisorState):
 - Note contradictions between sources.""")
     tool= await get_tools_lazy()
     factcheck_agent_runnable = create_agent(
-        model=llm, tools=tool, system_prompt=factcheck_prompt.content
+        model="openai:gpt-4o-mini", tools=tool, system_prompt=factcheck_prompt.content
     )
     result = await factcheck_agent_runnable.ainvoke(
         {"messages": [HumanMessage(content=f"Verify the research findings{data}")]}

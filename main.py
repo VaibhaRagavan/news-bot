@@ -1,4 +1,5 @@
 import os
+import httpx
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
@@ -24,7 +25,7 @@ async def get_tools():
             "web": {
                 "url": st.secrets.get("MCP_URL" , "http://127.0.0.1:8000/mcp"),
                 "transport": "streamable_http",
-                "headers": {"Connection": "close"},
+                "httpx_clinet_factory": lambda **kwargs: httpx.AsyncClient(**kwarg,http2=False),
             }
         }
     )

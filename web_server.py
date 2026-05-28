@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 import requests
 from datetime import datetime,timedelta
+import unicorn
 load_dotenv()
 
 web=FastMCP("web")
@@ -114,7 +115,9 @@ def get_old_news(query:str ,days_ago:int)->str:
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    web.run(transport="streamable-http", port=port)
+    app = web.streamable_http_app()
+    uvicorn.run(app, host="0.0.0.0", port=port)
+    
     
    
     

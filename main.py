@@ -6,15 +6,15 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 from langgraph.graph import StateGraph, START, END
 from typing_extensions import Dict,TypedDict
 from langchain.agents import create_agent
-
+import streamlit as st
 import asyncio
 
 load_dotenv()
+os.environ["LANGSMITH_API_KEY"] = st.secrets["LANGSMITH_API_KEY"] or os.getenv("LANGSMITH_API_KEY")
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"] or os.getenv("OPENAI_API_KEY")
 os.environ["LANGSMITH_TRACING"] = "true"
-os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
 os.environ["LANGSMITH_PROJECT"] = "Basic_Agentic_AI"
 os.environ["LANGSMITH_ENDPOINT"] = "https://eu.api.smith.langchain.com"
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
 
 ##Getting the tools from MCP server
@@ -22,7 +22,7 @@ async def get_tools():
     client = MultiServerMCPClient(
         {
             "web": {
-                "url": "http://127.0.0.1:8000/mcp",
+                "url": st.secrets[MCP_URL] or "http://127.0.0.1:8000/mcp",
                 "transport": "streamable_http",
             }
         }

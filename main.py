@@ -13,18 +13,20 @@ import nest_asyncio
 nest_asyncio.apply()
 
 load_dotenv()
-os.environ["LANGSMITH_API_KEY"] = st.secrets["LANGSMITH_API_KEY"]
-os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
-os.environ["LANGSMITH_TRACING"] = "true"
-os.environ["LANGSMITH_PROJECT"] = "Basic_Agentic_AI"
-os.environ["LANGSMITH_ENDPOINT"] = "https://eu.api.smith.langchain.com"
+def load_secrets():
+    os.environ["LANGSMITH_API_KEY"] = st.secrets["LANGSMITH_API_KEY"]
+    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+    os.environ["MCP_URL"] = st.secrets["MCP_URL"]
+    os.environ["LANGSMITH_TRACING"] = "true"
+    os.environ["LANGSMITH_PROJECT"] = "Basic_Agentic_AI"
+    os.environ["LANGSMITH_ENDPOINT"] = "https://eu.api.smith.langchain.com"
 
 ##Getting the tools from MCP server
 async def get_tools():
     client = MultiServerMCPClient(
         {
             "web": {
-                "url": st.secrets.get("MCP_URL" , "http://127.0.0.1:8000/mcp"),
+                "url": os.enviorn.get("MCP_URL" , "http://127.0.0.1:8000/mcp"),
                 "transport": "streamable_http",
                
             }
@@ -242,6 +244,7 @@ The final report should be in a structured format with the following sections:
 
 ##create the graph
 def graph(query):
+    load_secrets()
     async def main():
         """Main function to run the multi-agent system"""
         workflow = StateGraph(SupervisorState)

@@ -9,10 +9,10 @@ from typing_extensions import Dict,TypedDict
 from langchain.agents import create_agent
 import streamlit as st
 import asyncio
-import nest_asyncio
-nest_asyncio.apply()
+
 
 load_dotenv()
+llm= ChatOpenAI(model="gpt-4o-mini")
 def load_secrets():
     os.environ["LANGSMITH_API_KEY"] = st.secrets["LANGSMITH_API_KEY"]
     os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
@@ -26,7 +26,7 @@ async def get_tools():
     client = MultiServerMCPClient(
         {
             "web": {
-                "url": os.enviorn.get("MCP_URL" , "http://127.0.0.1:8000/mcp"),
+                "url": os.environ.get("MCP_URL" , "http://127.0.0.1:8000/mcp"),
                 "transport": "streamable_http",
                
             }
@@ -265,10 +265,22 @@ def graph(query):
                 router,
                 {"research": "research", "factcheck": "factcheck", "writer": "writer", END: END},)
         graph = workflow.compile()  
-        return await graph.ainvoke({"messages":[HumanMessage(content=query)],
+        result= await graph.ainvoke({"messages":[HumanMessage(content=query)],
                        "current_task": query,
                        "research_attempts": 0})
-    response = asyncio.run(main())
+        return result
+        
+    try:
+        loop =asyncio.get_event_loop()
+        if loop.is_running():
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as pool:
+                future = pool.submit(asyncio.run,main())
+                response = future.result()
+    else:
+        response = loop.run_until_complete(main())
+    except RuntimeError: 
+        response = asyncio.run(main())
     return response["final_report"]
 
          

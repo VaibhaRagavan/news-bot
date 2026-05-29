@@ -13,8 +13,8 @@ web=FastMCP("web",
             stateless_http=True,
             transport_security=TransportSecuritySettings(
         enable_dns_rebinding_protection=True,
-        allowed_hosts=["news-bot-production-460c.up.railway.app", "localhost:*", "127.0.0.1:*"],
-        allowed_origins=["https://news-bot-production-460c.up.railway.app", "http://localhost:*"],
+        allowed_hosts=["news-bot-production-573f.up.railway.app", "localhost:*", "127.0.0.1:*"],
+        allowed_origins=["https://news-bot-production-573f.up.railway.app", "http://localhost:*"],
     )
            )
    

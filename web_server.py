@@ -65,7 +65,7 @@ def get_news(query:str)->str:
         if detected_feed and name not in detected_feed:
             continue #skip other regions news
         feed=feedparser.parse(url)
-        for entry in feed.entries[:5]:
+        for entry in feed.entries[:2]:
             results.append({
                 "title":entry.title,
                 "summary":entry.get("summary", "No summary avaiable"),
@@ -81,7 +81,7 @@ def get_news(query:str)->str:
                 "summary":entry.get("summary", "No summary avaiable"),
                 "link":entry.link
             })
-    return  str(results[:10])
+    return  str(results[:5])
 
     
 ## Tavily search

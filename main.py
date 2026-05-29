@@ -10,7 +10,6 @@ from langchain.agents import create_agent
 import streamlit as st
 import asyncio
 
-
 load_dotenv()
 llm= ChatOpenAI(model="gpt-4o-mini")
 def load_secrets():
@@ -38,8 +37,10 @@ async def get_tools():
 
 @st.cache_resource
 def get_cached_tools():
-   
-    return asyncio.run(get_tools())
+    loop = asyncio.new_event_loop()
+    result = loop.run_until_complete(get_tools())
+    loop.close()
+    return result
 
 ## Build the supervisor state
 class SupervisorState(TypedDict):
@@ -271,7 +272,9 @@ def graph(query):
                        "research_attempts": 0})
         return result
     
-    response = asyncio.run(main())
+  
+    loop = asyncio.new_event_loop()
+    response = loop.run_until_complete(main())
+    loop.close()
     return response["final_report"]
-
          

@@ -9,6 +9,8 @@ from typing_extensions import Dict,TypedDict
 from langchain.agents import create_agent
 import streamlit as st
 import asyncio
+import nest_asyncio
+nest_asyncio.apply()
 
 load_dotenv()
 os.environ["LANGSMITH_API_KEY"] = st.secrets["LANGSMITH_API_KEY"]
@@ -32,13 +34,9 @@ async def get_tools():
     return tool
 
 
-tools = None
-llm = ChatOpenAI(model="gpt-4o-mini")
-async def get_tools_lazy():
-    global tools
-    if tools is None:
-        tools = await get_tools()
-    return tools
+@st.cache_resource
+def get_cached_tools():
+    return asyncio.run(get_tools())
 
 ## Build the supervisor state
 class SupervisorState(TypedDict):
@@ -141,7 +139,7 @@ OUTPUT FORMAT (for each article):
 - Link:
 - Date (if available):                                
 """)
-    tool= await get_tools_lazy()
+    tool= get_cached_tools()
     agent_runnable = create_agent(
         model="openai:gpt-4o-mini", tools=tool, system_prompt=research_prompt.content
     )
@@ -171,7 +169,7 @@ async def factcheck_agent(state: SupervisorState):
 - If research_data is empty or failed → respond with RESEARCH_FAILED
 - Flag each item VERIFIED or NOT VERIFIED
 - Note contradictions between sources.""")
-    tool= await get_tools_lazy()
+    tool= get_cached_tools()
     factcheck_agent_runnable = create_agent(
         model="openai:gpt-4o-mini", tools=tool, system_prompt=factcheck_prompt.content
     )

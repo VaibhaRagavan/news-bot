@@ -9,6 +9,7 @@ from typing_extensions import Dict,TypedDict
 from langchain.agents import create_agent
 import streamlit as st
 import asyncio
+import concurrent.futures
 
 load_dotenv()
 llm= ChatOpenAI(model="gpt-4o-mini")
@@ -37,10 +38,8 @@ async def get_tools():
 
 @st.cache_resource
 def get_cached_tools():
-    loop = asyncio.new_event_loop()
-    result = loop.run_until_complete(get_tools())
-    loop.close()
-    return result
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
+        return ex.submit(asyncio.run, get_tools()).result()
 
 ## Build the supervisor state
 class SupervisorState(TypedDict):
@@ -273,8 +272,8 @@ def graph(query):
         return result
     
   
-    loop = asyncio.new_event_loop()
-    response = loop.run_until_complete(main())
-    loop.close()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
+        response = ex.submit(asyncio.run, main()).result()
+        
     return response["final_report"]
          

@@ -269,18 +269,8 @@ def graph(query):
                        "current_task": query,
                        "research_attempts": 0})
         return result
-        
-    try:
-        loop =asyncio.get_event_loop()
-        if loop.is_running():
-            import concurrent.futures
-            with concurrent.futures.ThreadPoolExecutor() as pool:
-                future = pool.submit(asyncio.run,main())
-                response = future.result()
-        else:
-            response = loop.run_until_complete(main())
-    except RuntimeError: 
-        response = asyncio.run(main())
+   
+    response = asyncio.run(main())
     return response["final_report"]
 
          
